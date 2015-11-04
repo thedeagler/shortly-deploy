@@ -3,7 +3,19 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      //concat all client js files
+      //put the new concat file in gruntification
+
+      options: {
+        separator: ';'
+      },
+      build: {
+        src: ['public/client/*.js'],
+        dest: 'gruntification/concat.js'
+      }
     },
+
+    clean: ['gruntification'],
 
     mochaTest: {
       test: {
@@ -21,6 +33,13 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+      },
+      build: {
+        src: 'gruntification/concat.js',
+        dest: 'build/<%= pkg.name %>.min.js'
+      }
     },
 
     jshint: {
@@ -65,6 +84,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -94,8 +114,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
-  ]);
+  grunt.registerTask('build', ['clean', 'concat', 'uglify']);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
