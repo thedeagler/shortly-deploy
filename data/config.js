@@ -11,24 +11,27 @@ db.on('error', console.error.bind(console, 'connectin\' err\'r: '));
 db.once('open', function(callback){
 
   //create collections
-  var Links = mongoose.Schema({
-    id : Number,
+  var links = mongoose.Schema({
+    id : {type: mongoose.Schema.Types.ObjectId, required: true, turnOn: true},
     url: String,
     base_url: String,
     code: String,
     title: String,
-    visits: Number
-    timestamp: Date
+    visits: {type: Number, default: 0},
+    timestamp: {type: Date, default: Date.now}
   });
   
-  var Users = mongoose.Schema({
-    id: Number,
-    username: String,
-    password: String,
-    timestamp: Date
+  var users = mongoose.Schema({
+    id : {type: mongoose.Schema.Types.ObjectId, required: true, turnOn: true},
+    username: {type: String, required: true},
+    password: {type: String, required: true},
+    timestamp: {type: Date, default: Date.now}
   });
 
   //create models
-  var Link;
-  //yay!
+  var Link = mongoose.model('Link', links);
+  
+  var User = mongoose.model('User', users);
 }) 
+
+module.exports = db;
