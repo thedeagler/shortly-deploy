@@ -11,11 +11,11 @@ module.exports = function(grunt) {
       },
       build: {
         src: ['public/client/*.js'],
-        dest: 'gruntification/concat.js'
+        dest: 'public/dist/concatted.js'
       }
     },
 
-    clean: ['gruntification'],
+    clean: ['public/dist'],
 
     mochaTest: {
       test: {
@@ -37,27 +37,34 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: 'gruntification/concat.js',
-        dest: 'build/<%= pkg.name %>.min.js'
+        src: 'public/dist/concatted.js',
+        dest: 'public/dist/<%= pkg.name %>.min.js'
       }
     },
 
     jshint: {
-      files: [
-        // Add filespec list here
-      ],
+      files: ['*.js', 'app/**/*.js', 'app/*.js', 'public/client/*.js'],
       options: {
         force: 'true',
         jshintrc: '.jshintrc',
         ignores: [
           'public/lib/**/*.js',
-          'public/dist/**/*.js'
+          'public/dist/**/*.js',
+          'public/client/shortly-express.min.js'
         ]
       }
     },
 
     cssmin: {
         // Add filespec list here
+        options: {
+
+        },
+        target: {
+          files: {
+            'public/dist/gra.css': ['public/style.css']
+          }
+        }
     },
 
     watch: {
@@ -114,7 +121,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', ['clean', 'concat', 'uglify']);
+  grunt.registerTask('build', ['clean', 'concat', 'uglify', 'cssmin']);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
@@ -124,9 +131,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('deploy', [
-      // add your production server task here
-  ]);
+  grunt.registerTask('deploy', ['jshint']);
 
 
 };
