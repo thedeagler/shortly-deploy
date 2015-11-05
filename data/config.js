@@ -29,6 +29,6 @@ db.once('open', function(callback){
   });
 
   //create models
-  var Link
+  var Link;
   //yay!
 }) 

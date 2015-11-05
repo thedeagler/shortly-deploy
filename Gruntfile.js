@@ -3,15 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
-      //concat all client js files
-      //put the new concat file in gruntification
-
-      options: {
-        separator: ';'
+      js: {
+        src: [/*'public/lib/*.js',*/ 'public/client/*.js'],
+        dest: 'public/dist/scripts.js'
       },
-      build: {
-        src: ['public/client/*.js'],
-        dest: 'public/dist/concatted.js'
+      css: {
+        src: ['public/*.css'],
+        dest: 'public/dist/gra.css'
       }
     },
 
@@ -36,10 +34,10 @@ module.exports = function(grunt) {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
-      build: {
-        src: 'public/dist/concatted.js',
-        dest: 'public/dist/<%= pkg.name %>.min.js'
-      }
+      js: {
+        src: 'public/dist/scripts.js',
+        dest: 'public/scripts.min.js'
+      },
     },
 
     jshint: {
@@ -56,31 +54,24 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
-        // Add filespec list here
-        options: {
-
-        },
         target: {
           files: {
-            'public/dist/gra.css': ['public/style.css']
+            'public/styles.min.css': ['public/dist/gra.css']
           }
         }
     },
 
     watch: {
+      options: {
+        ignores: '**/*.min.*'
+      },
       scripts: {
-        files: [
-          'public/client/**/*.js',
-          'public/lib/**/*.js',
-        ],
-        tasks: [
-          'concat',
-          'uglify'
-        ]
+        files: ['public/client/**/*.js', 'public/lib/**/*.js', '!public/scripts.min.js'],
+        tasks: ['clean', 'concat:js', 'uglify']
       },
       css: {
-        files: 'public/*.css',
-        tasks: ['cssmin']
+        files: ['public/*.css', '!public/styles.min.css'],
+        tasks: ['clean', 'concat:css', 'cssmin']
       }
     },
 
@@ -117,9 +108,7 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
-  grunt.registerTask('test', [
-    'mochaTest'
-  ]);
+  grunt.registerTask('test', ['mochaTest']);
 
   grunt.registerTask('build', ['clean', 'concat', 'uglify', 'cssmin']);
 
