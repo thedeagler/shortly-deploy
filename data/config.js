@@ -1,7 +1,7 @@
 //here we create our mongoose schemas
 
 var mongoose = require('mongoose');
-mongoose.connect(/*databse server ip?*/);
+mongoose.connect('http://127.0.0.1:9090');
 
 //initiate connection
 var db = mongoose.connection;
@@ -10,7 +10,6 @@ db.on('error', console.error.bind(console, 'connectin\' err\'r: '));
 //if connection is successful...
 db.once('open', function(callback){
 
-  //create collections
   var links = mongoose.Schema({
     id : {type: mongoose.Schema.Types.ObjectId, required: true, turnOn: true},
     url: String,
@@ -20,16 +19,16 @@ db.once('open', function(callback){
     visits: {type: Number, default: 0},
     timestamp: {type: Date, default: Date.now}
   });
+
+  var Link = mongoose.model('Link', links);
   
+
   var users = mongoose.Schema({
     id : {type: mongoose.Schema.Types.ObjectId, required: true, turnOn: true},
     username: {type: String, required: true},
     password: {type: String, required: true},
     timestamp: {type: Date, default: Date.now}
   });
-
-  //create models
-  var Link = mongoose.model('Link', links);
   
   var User = mongoose.model('User', users);
 }) 
