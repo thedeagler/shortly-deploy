@@ -1,9 +1,9 @@
 var db = require('../config');
+var mongoose = require('mongoose');
 // var db = require('../../data/config.js');
 var crypto = require('crypto');
 
 var links = mongoose.Schema({
-  id : {type: mongoose.Schema.Types.ObjectId, required: true, turnOn: true},
   url: String,
   base_url: String,
   code: String,
@@ -15,7 +15,7 @@ var links = mongoose.Schema({
 links.pre('save', function(next) {
   var shasum = crypto.createHash('sha1');
   shasum.update(this.url);
-  this.code = shasum.digest('hex').slice(0, 5));
+  this.code = shasum.digest('hex').slice(0, 5);
   next();
 });
 
