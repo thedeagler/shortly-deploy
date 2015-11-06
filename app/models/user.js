@@ -11,10 +11,11 @@ var users = mongoose.Schema({
 
 
 users.methods.comparePassword = function(attemptedPassword, callback) {
-  bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
-    console.log(err);
-    if(err) { callback(err) }
-    else { callback(null, isMatch) };
+  this.hashPassword().then(function() {
+    bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
+      if(err) { callback(err) }
+      else { callback(null, isMatch) };
+    });
   });
 };
 
