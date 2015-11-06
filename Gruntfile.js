@@ -3,8 +3,26 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';'
+      },
+      lib: { 
+        src: [
+          'public/lib/jquery.js',
+          'public/lib/underscore.js',
+          'public/lib/backbone.js',
+          'public/lib/handlebars.js'],
+        dest: 'public/dist/lib.js'
+      },
       js: {
-        src: [/*'public/lib/*.js',*/ 'public/client/*.js'],
+        src: [
+          'public/client/app.js',
+          'public/client/link.js',
+          'public/client/links.js',
+          'public/client/linkView.js',
+          'public/client/linksView.js',
+          'public/client/createLinkView.js',
+          'public/client/router.js'],
         dest: 'public/dist/scripts.js'
       },
       css: {
@@ -33,6 +51,10 @@ module.exports = function(grunt) {
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+      },
+      lib: {
+        src: 'public/dist/lib.js',
+        dest: 'public/lib.min.js'
       },
       js: {
         src: 'public/dist/scripts.js',
@@ -77,6 +99,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        command: 'git push azure master'
       }
     },
   });
@@ -114,13 +137,13 @@ module.exports = function(grunt) {
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
-      // add your production server task here
+      grunt.task.run(['shell:prodServer']);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
-  grunt.registerTask('deploy', ['jshint']);
+  grunt.registerTask('deploy', ['jshint', 'build', 'upload']);
 
 
 };
